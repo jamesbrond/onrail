@@ -1,7 +1,6 @@
 from datetime import timedelta
 from dateutil import relativedelta
 import holidays
-from pprint import pprint
 from config import Config
 from price import Prices, Price
 import date_utils
@@ -21,13 +20,17 @@ class Fare:
 
         prices = self.best(start, end, [conf.get('subscription_annual'), conf.get('subscription_monthly'), conf.get('subscription_weekly'), conf.get('ticket')], conf.get('smartwork'), 0)
         cal = Cal(prices, int(conf.get('firstweekday')))
-        print('Best solution:')
-        cal.prCalendar(w=int(conf.get('day_width')), l=int(conf.get('line_height')), c=int(conf.get('months_space')), m=int(conf.get('months_per_line')))
-        print('Legend:')
-        print('%s\n%s\n%s' % (colored('vacation', 'red'), colored('out of office', 'blue'), colored('smartwork', 'magenta')))
-        print('%s\n%s\n%s' % (colored('daily ticket', 'white'), colored('weekly subscription', 'green'), colored('monthly subscription', 'cyan')))
-        print('\nDetails:')
-
+        print(colored(f'\t\t\tBest solution [{date_utils.format(start)} - {date_utils.format(end)}]:\t\t\t\n', 'white', on_color='on_blue'))
+        if conf.get('show_calendar'):
+            cal.prCalendar(w=int(conf.get('day_width')), l=int(conf.get('line_height')), c=int(conf.get('months_space')), m=int(conf.get('months_per_line')))
+            print('Legend: %s vacation, %s out of office, %s smartwork, %s daily ticket, %s weekly subscription, %s monthly subscription' % (
+                colored('■', 'red'),
+                colored('■', 'blue'),
+                colored('■', 'magenta'),
+                colored('■', 'white'),
+                colored('■', 'green'),
+                colored('■', 'cyan')))
+            print('\n')
         print(prices.format(conf.get('verbose')))
 
     def daily(self, start, end, price, smartwork):
@@ -86,7 +89,6 @@ class Fare:
         return coverage
 
     def best(self, start, end, prices, smartwork, deep):
-        #print("%s deep %d: analyzing periond: %s -> %s" % ('   '*deep, deep, date_utils.format(start), date_utils.format(end)))
         if deep == 0:
             p0 = self.annually(start, end, prices[deep])
         elif deep == 1:
@@ -100,7 +102,6 @@ class Fare:
         for period in p0.getChildren():
             p1 = self.best(max(start, period.getStart()), min(end, period.getEnd()), prices, smartwork, deep + 1)
             if p1.getPrice() < period.getPrice():
-                #print('%s wins on %s' % (p1.getPrice(), period.getPrice()))
                 if deep == 2:
                     p2 = p1
                     sw = smartwork
@@ -110,6 +111,7 @@ class Fare:
                         p2 = self.best(max(start, period.getStart()), min(end, period.getEnd()), prices, sw, deep + 1)
                 coverage.append(p1)
             else:
-                #print('%s wins on %s' % (period.getPrice(), p1.getPrice()))
                 coverage.append(period)
         return coverage
+
+# ~@:-]
