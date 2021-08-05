@@ -18,12 +18,12 @@ class Fare:
         self._exceptions = conf.getExceptions()
         self._business_exceptions = conf.getBusinessexceptions()
 
-        prices = self.best(start, end, [conf.get('subscription_annual'), conf.get('subscription_monthly'), conf.get('subscription_weekly'), conf.get('ticket')], conf.get('smartwork'), 0)
+        prices = self.best(start, end, [conf.get('subscription_annual'), conf.get('subscription_monthly'), conf.get('subscription_weekly'), conf.get('ticket')], conf.get('homeoffice'), 0)
         cal = Cal(prices, int(conf.get('firstweekday')))
         print(colored(f'\t\t\tBest solution [{date_utils.format(start)} - {date_utils.format(end)}]:\t\t\t\n', 'white', on_color='on_blue'))
         if conf.get('show_calendar'):
             cal.prCalendar(w=int(conf.get('day_width')), l=int(conf.get('line_height')), c=int(conf.get('months_space')), m=int(conf.get('months_per_line')))
-            print('Legend: %s vacation, %s out of office, %s smartwork, %s daily ticket, %s weekly subscription, %s monthly subscription' % (
+            print('Legend: %s vacation, %s out of office, %s home office, %s daily ticket, %s weekly subscription, %s monthly subscription' % (
                 colored('■', 'red'),
                 colored('■', 'blue'),
                 colored('■', 'magenta'),
@@ -33,8 +33,8 @@ class Fare:
             print('\n')
         print(prices.format(conf.get('verbose')))
 
-    def daily(self, start, end, price, smartwork):
-        sw = smartwork
+    def daily(self, start, end, price, homeoffice):
+        ho = homeoffice
         d = start;
         exceptions = self._exceptions
         business_exceptions = self._business_exceptions
@@ -50,11 +50,11 @@ class Fare:
                 elif d in business_exceptions:
                     coverage.append(Price(d, d, 0, 'out of office', 'blue'))
                 else:
-                    if sw > 0:
-                        coverage.append(Price(d, d, 0, 'smartwork [sw %d]' % (smartwork), 'magenta'))
+                    if ho > 0:
+                        coverage.append(Price(d, d, 0, 'home office [ho %d]' % (homeoffice), 'magenta'))
                     else:
-                        coverage.append(Price(d, d, price*2, 'daily ticket [sw %d]' % (smartwork)))
-                    sw -= 1
+                        coverage.append(Price(d, d, price*2, 'daily ticket [ho %d]' % (homeoffice)))
+                    ho -= 1
             else:
                 coverage.append(Price(d, d, 0, '', 'red'))
             d += timedelta(days=1)
@@ -88,7 +88,7 @@ class Fare:
             d += relativedelta.relativedelta(years=1)
         return coverage
 
-    def best(self, start, end, prices, smartwork, deep):
+    def best(self, start, end, prices, homeoffice, deep):
         if deep == 0:
             p0 = self.annually(start, end, prices[deep])
         elif deep == 1:
@@ -96,19 +96,19 @@ class Fare:
         elif deep == 2:
             p0 = self.weekly(start, end, prices[deep])
         elif deep == 3:
-            return self.daily(start, end, prices[deep], smartwork)
+            return self.daily(start, end, prices[deep], homeoffice)
 
         coverage = Prices();
         for period in p0.getChildren():
-            p1 = self.best(max(start, period.getStart()), min(end, period.getEnd()), prices, smartwork, deep + 1)
+            p1 = self.best(max(start, period.getStart()), min(end, period.getEnd()), prices, homeoffice, deep + 1)
             if p1.getPrice() < period.getPrice():
                 if deep == 2:
                     p2 = p1
-                    sw = smartwork
-                    while p2.getPrice() < period.getPrice() and sw > 0:
+                    ho = homeoffice
+                    while p2.getPrice() < period.getPrice() and ho > 0:
                         p1 = p2
-                        sw -= 1
-                        p2 = self.best(max(start, period.getStart()), min(end, period.getEnd()), prices, sw, deep + 1)
+                        ho -= 1
+                        p2 = self.best(max(start, period.getStart()), min(end, period.getEnd()), prices, ho, deep + 1)
                 coverage.append(p1)
             else:
                 coverage.append(period)

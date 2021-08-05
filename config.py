@@ -26,7 +26,7 @@ class Config:
         for key in config['GLOBAL']:
             if key == 'workdays':
                 self._config[key] = eval(config['GLOBAL'][key],{},{})
-            elif key == 'smartwork':
+            elif key == 'homeoffice':
                 self._config[key] = config.getint('GLOBAL', key)
             else:
                 self._config[key] = config['GLOBAL'][key]
