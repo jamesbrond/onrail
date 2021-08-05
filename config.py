@@ -14,8 +14,12 @@ class Config:
         parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='Produce a more verbose output')
         parser.add_argument('--debug', dest='debug', action='store_true', help='Writes debug informations to onrail.log file')
         parser.add_argument('-s --start', dest='start', default=date_utils.format(date_utils.now()), help='Start period date. Default today')
-        parser.add_argument('-e --end', dest='end', default=date_utils.format(date_utils.lastDayOfMonth(date_utils.now())), help='End period date. Default end of current month')
+        parser.add_argument('-e --end', dest='end', help='End period date. Default end of start date month')
+        parser.add_argument('--calendar', dest='show_calendar', action='store_true', default=False, help='Show calendar')
         args = vars(parser.parse_args())
+        end = args.get('end')
+        if not end:
+            args['end'] = date_utils.format(date_utils.lastDayOfMonth(date_utils.str2date(args['start'])))
         config = configparser.ConfigParser()
         config.read(args['config'])
         self._config = {}
