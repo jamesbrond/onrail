@@ -1,5 +1,6 @@
 import date_utils
 import abc
+from termcolor import colored
 
 class Component(metaclass=abc.ABCMeta):
     @abc.abstractmethod
@@ -80,7 +81,7 @@ class Price(Component):
 
     def format(self, verbose=False):
         if self._price != 0 or verbose:
-            return "%s| %s -> %s (%d)\t [%.2f] %s\n" % ('   '*(self._deep), date_utils.format(self._start), date_utils.format(self._end), self._diff, self._price, self._descr)
+            return "%s| %s -> %s (%d)\t [%.2f] %s\n" % ('   '*(self._deep), date_utils.format(self._start), date_utils.format(self._end), self._diff, self._price, colored(self._descr, 'green'))
         return ''
 
     def getChildren(self):

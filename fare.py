@@ -6,6 +6,7 @@ from price import Prices, Price
 import date_utils
 from cal import Cal
 from termcolor import colored
+from time import strftime
 
 class Fare:
 
@@ -74,7 +75,7 @@ class Fare:
         e = date_utils.lastDayOfMonth(end)
         coverage = Prices()
         while d < e:
-            coverage.append(Price(d, d + relativedelta.relativedelta(months=1, days=-1), price, 'monthly subscription', 'cyan'))
+            coverage.append(Price(d, d + relativedelta.relativedelta(months=1, days=-1), price, f"{d.strftime('%B')} monthly subscription", 'cyan'))
             d += relativedelta.relativedelta(months=1)
         return coverage
 
