@@ -1,8 +1,8 @@
 import os
 import logging
 import argparse
-import configparser
 import date_utils
+import yaml
 
 class Config:
     'Defines what arguments it requires, and figures out how to parse those out of sys.argv.'
@@ -20,41 +20,30 @@ class Config:
         end = args.get('end')
         if not end:
             args['end'] = date_utils.format(date_utils.lastDayOfMonth(date_utils.str2date(args['start'])))
-        config = configparser.ConfigParser()
-        config.read(args['config'])
-        self._config = {}
-        for key in config['GLOBAL']:
-            if key == 'workdays':
-                self._config[key] = eval(config['GLOBAL'][key],{},{})
-            elif key == 'homeoffice':
-                self._config[key] = config.getint('GLOBAL', key)
-            else:
-                self._config[key] = config['GLOBAL'][key]
-        for key in config['LOGGER']:
-            self._config[key] = config['LOGGER'][key]
 
-        for key in config['PRICE_LIST']:
-            self._config[key] = config.getfloat('PRICE_LIST', key)
+        with open(args['config'], 'r') as file:
+            self._config = yaml.safe_load(file)
 
         self._exceptions = []
         self._business_exceptions = []
-        for key in config['CALENDAR']:
+        for key in self._config['calendar']:
             if key == 'vacations' or key == 'holidays':
-                self._exceptions.extend(date_utils.explodeDates([x.strip() for x in config['CALENDAR'][key].split(',')]))
+                self._exceptions.extend(date_utils.explodeDates([x.strip() for x in self._config['calendar'][key].split(',')]))
             elif key == 'travels':
-                self._business_exceptions.extend(date_utils.explodeDates([x.strip() for x in config['CALENDAR'][key].split(',')]))
+                self._business_exceptions.extend(date_utils.explodeDates([x.strip() for x in self._config['calendar'][key].split(',')]))
 
+        self._logger = self.getLogger()
         for key in args:
             val = args[key]
             if (val != None):
-                self._config[key] = val
+                    self._logger.debug(f"{key} => {val}")
+                    self._config[key] = val
 
-        self._logger = self.getLogger()
-        for key in self._config:
-            self._logger.debug(key + ' => ' + str(self._config[key]))
-
-    def get(self, key):
-        return self._config[key]
+    def get(self, *args):
+        if len(args) == 1:
+            return self._config[args[0]]
+        else:
+            return self._config[args[0]][args[1]]
 
     def getExceptions(self):
         return self._exceptions
@@ -63,15 +52,15 @@ class Config:
         return self._business_exceptions
 
     def getLogger(self):
-        name = self._config['log_name'].replace('.log', '')
+        name = self._config['logger']['log_name'].replace('.log', '')
         logger = logging.getLogger(name)
         logger.setLevel(logging.DEBUG)
         if not logger.handlers:
-            file_name = os.path.join(self._config['log_dir'], '%s.log' % name)
+            file_name = os.path.join(self._config['logger']['log_dir'], '%s.log' % name)
             handler = logging.FileHandler(file_name)
             formatter = logging.Formatter('%(asctime)s %(levelname)s:%(name)s %(message)s')
             handler.setFormatter(formatter)
-            if self._config['debug']:
+            if self._config['logger']['debug']:
                 handler.setLevel(logging.DEBUG)
             else:
                 handler.setLevel(logging.ERROR)

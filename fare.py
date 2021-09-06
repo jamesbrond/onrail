@@ -19,7 +19,7 @@ class Fare:
         self._exceptions = conf.getExceptions()
         self._business_exceptions = conf.getBusinessexceptions()
 
-        prices = self.best(start, end, [conf.get('subscription_annual'), conf.get('subscription_monthly'), conf.get('subscription_weekly'), conf.get('ticket')], conf.get('homeoffice'), 0)
+        prices = self.best(start, end, [conf.get('prices', 'subscription_annual'), conf.get('prices', 'subscription_monthly'), conf.get('prices', 'subscription_weekly'), conf.get('prices', 'ticket')], conf.get('homeoffice'), 0)
         cal = Cal(prices, int(conf.get('firstweekday')))
         print(colored(f'\t\t\tBest solution [{date_utils.format(start)} - {date_utils.format(end)}]:\t\t\t\n', 'white', on_color='on_blue'))
         if conf.get('show_calendar'):
