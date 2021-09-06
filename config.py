@@ -10,9 +10,9 @@ class Config:
     def __init__(self):
         parser = argparse.ArgumentParser(prog="OnRail", usage='%(prog)s [options]', description='Useless program for poor commuters.')
         parser.add_argument('--version', action='version', version='%(prog)s 1   .0')
-        parser.add_argument('-c', '--config', dest='config', required=True, help='Use the file ad configuration')
+        parser.add_argument('-c', '--config', dest='config', required=True, help='Use the YAML configuration file')
         parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='Produce a more verbose output')
-        parser.add_argument('--debug', dest='debug', action='store_true', help='Writes debug informations to onrail.log file')
+        parser.add_argument('--debug', dest='debug', action='store_true', help='Writes debug information to onrail.log file')
         parser.add_argument('-s --start', dest='start', default=date_utils.format(date_utils.now()), help='Start period date. Default today')
         parser.add_argument('-e --end', dest='end', help='End period date. Default end of start date month')
         parser.add_argument('--calendar', dest='show_calendar', action='store_true', default=False, help='Show calendar')
