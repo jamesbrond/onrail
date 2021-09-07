@@ -5,7 +5,7 @@ firstweekday: 0
 homeoffice: 3
 vacationdays: 0
 # calendar months in a row
-months_per_line: 6
+months_per_line: 3
 # calendar number of spaces between month columns
 months_space: 6
 # calendar lines per week

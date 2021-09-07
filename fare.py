@@ -41,7 +41,7 @@ class Fare:
         cal = Cal(prices, int(conf.get('firstweekday')))
         print(colored(f'\t\t\tBest solution [{date_utils.format(start)} - {date_utils.format(end)}]:\t\t\t\n', 'white', on_color='on_blue'))
         if conf.get('show_calendar'):
-            cal.prCalendar(w=int(conf.get('day_width')), l=int(conf.get('line_height')), c=int(conf.get('months_space')), m=int(conf.get('months_per_line')))
+            cal.prCalendar(w=conf.get('day_width'), l=conf.get('line_height'), c=conf.get('months_space'), m=conf.get('months_per_line'))
             print('Legend: %s vacation, %s out of office, %s home office, %s daily ticket, %s weekly subscription, %s monthly subscription' % (
                 colored('■', 'red'),
                 colored('■', 'blue'),

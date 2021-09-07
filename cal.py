@@ -2,6 +2,7 @@ import calendar
 from dateutil import relativedelta
 from termcolor import colored
 import date_utils
+import math
 
 class Cal(calendar.TextCalendar):
     def __init__(self, prices, firstweekday=0):
@@ -20,11 +21,15 @@ class Cal(calendar.TextCalendar):
                 leaves.extend(ll)
         return leaves
 
+    # @param w day width
+    # @param l line height
+    # @param c months space
+    # @param m months_per_line
     def formatCalendar(self, w=2, l=1, c=6, m=3):
         w = max(2, w)
         l = max(1, l)
         c = max(2, c)
-        colwidth = (w + 1) * 7 - 1
+        colwidth = (w + 1) * 7 - 1 # day_width + space * 7 - trailing space
         v = []
         a = v.append
 
@@ -35,11 +40,36 @@ class Cal(calendar.TextCalendar):
             for date in date_utils.explodeDates([strrange]):
                 colors[date_utils.format(date)] = (leaf.getColor(), leaf.getColorAttrs())
 
-        header = self.formatweekheader(w)
+
+
+        r = relativedelta.relativedelta(date_utils.firstDayOfMonth(self._end), date_utils.firstDayOfMonth(self._start))
+        print(f"{date_utils.format(date_utils.lastDayOfMonth(self._end))} -  {date_utils.format(date_utils.firstDayOfMonth(self._start))}")
+        print(r)
+        month_tot = r.years * 12 + r.months + 1
+        month_lines = math.ceil(month_tot / m)
+        print(f"months {m} {month_tot} {month_lines}")
         d = self._start
+        for i in range(month_lines):
+            month_rows = min(m, month_tot - m*i)
+            print(f"row {i}: {month_rows}")
+            row = []
+            for j in range(month_rows):
+                print(f"drow month {d.month}")
+                row.append(self.monthdatescalendar(d.year, d.month))
+                print(self.monthdatescalendar(d.year, d.month))
+                d += relativedelta.relativedelta(months=1)
+
+
+        header = self.formatweekheader(w)
+
+
         while d < self._end:
             theyear = d.year
             themonth = d.month
+
+
+
+
             if theyear == self._end.year:
                 months = range(themonth, min(m + themonth, self._end.month+1))
             elif m + themonth > 13:
@@ -49,22 +79,22 @@ class Cal(calendar.TextCalendar):
             names = (self.formatmonthname(theyear, k, 7 * (w + 1) - 1) for k in months)
             a(colored(self.formatstring(names, colwidth, c), 'white', attrs=['reverse']))
             a('\n'*l)
-            headers = (header for k in months)
-            a(colored(self.formatstring(headers, colwidth, c).rstrip(), 'white', attrs=['bold']))
-            a('\n'*l)
-            cal = []
-            for k in months:
-                cal.append(self.monthdatescalendar(theyear, k))
-            height = max(len(wks) for wks in cal)
-            for j in range(height):
-                weeks = []
-                for k in range(len(months)):
-                    if j >= len(cal[k]):
-                        weeks.append('')
-                    else:
-                        weeks.append(self.formatweekWithColor(cal[k][j], w, colors))
-                a(self.formatstring(weeks, colwidth, c).rstrip())
-                a('\n' * l)
+            # headers = (header for k in months)
+            # a(colored(self.formatstring(headers, colwidth, c).rstrip(), 'white', attrs=['bold']))
+            # a('\n'*l)
+            # cal = []
+            # for k in months:
+            #     cal.append(self.monthdatescalendar(theyear, k))
+            # height = max(len(wks) for wks in cal)
+            # for j in range(height):
+            #     weeks = []
+            #     for k in range(len(months)):
+            #         if j >= len(cal[k]):
+            #             weeks.append('')
+            #         else:
+            #             weeks.append(self.formatweekWithColor(cal[k][j], w, colors))
+            #     a(self.formatstring(weeks, colwidth, c).rstrip())
+            #     a('\n' * l)
 
             d += relativedelta.relativedelta(months=m)
         return ''.join(v)
@@ -88,6 +118,7 @@ class Cal(calendar.TextCalendar):
             s = ''
         else:
             s = colored('%2i' % day, color=color, attrs=attrs)
+            # s = '%2i' % day
         return s.center(width)
 
     def formatstring(self, cols, colwidth=(7*3 - 1) , spacing=6):
