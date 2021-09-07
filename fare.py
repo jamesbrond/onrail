@@ -7,13 +7,31 @@ import date_utils
 from cal import Cal
 from termcolor import colored
 from time import strftime
+import sys
 
 class Fare:
 
     def __init__(self):
-        conf = Config();
-        start= date_utils.str2date(conf.get('start'))
-        end = date_utils.str2date(conf.get('end'))
+        conf = Config()
+        self.logger = conf.get_logger()
+
+        try:
+            start = date_utils.str2date(conf.get('start'))
+        except Exception:
+            self.logger.error("Fatal: invalid start date", exc_info=True)
+            print("Fatal: invalid start date", file=sys.stderr)
+            sys.exit(1)
+        try:
+            end = date_utils.str2date(conf.get('end'))
+        except Exception:
+            print("Fatal: invalid end date", file=sys.stderr)
+            self.logger.error("Fatal: invalid end date", exc_info=True)
+            sys.exit(1)
+
+        if start > end:
+            print("Fatal: end date must be after than start date", file=sys.stderr)
+            self.logger.error("Fatal: end date must be after than start date")
+            sys.exit(1)
 
         self._workdays = conf.get('workdays')
         self._exceptions = conf.getExceptions()

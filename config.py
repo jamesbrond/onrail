@@ -32,7 +32,7 @@ class Config:
             elif key == 'travels':
                 self._business_exceptions.extend(date_utils.explodeDates([x.strip() for x in self._config['calendar'][key].split(',')]))
 
-        self._logger = self.getLogger()
+        self._logger = self.setLogger()
         for key in args:
             val = args[key]
             if (val != None):
@@ -51,7 +51,7 @@ class Config:
     def getBusinessexceptions(self):
         return self._business_exceptions
 
-    def getLogger(self):
+    def setLogger(self):
         name = self._config['logger']['log_name'].replace('.log', '')
         logger = logging.getLogger(name)
         logger.setLevel(logging.DEBUG)
@@ -66,3 +66,6 @@ class Config:
                 handler.setLevel(logging.ERROR)
             logger.addHandler(handler)
         return logger
+
+    def get_logger(self):
+        return self._logger
