@@ -5,7 +5,7 @@ from config import Config
 from price import Prices, Price
 import date_utils
 from cal import Cal
-from termcolor import colored
+from colors import color
 from time import strftime
 import sys
 
@@ -39,16 +39,11 @@ class Fare:
 
         prices = self.best(start, end, [conf.get('prices', 'subscription_annual'), conf.get('prices', 'subscription_monthly'), conf.get('prices', 'subscription_weekly'), conf.get('prices', 'ticket')], conf.get('homeoffice'), 0)
         cal = Cal(prices, int(conf.get('firstweekday')))
-        print(colored(f'\t\t\tBest solution [{date_utils.format(start)} - {date_utils.format(end)}]:\t\t\t\n', 'white', on_color='on_blue'))
+        print(color(f" Best solution [ { date_utils.format(start)} - {date_utils.format(end)} ]:", style='bold') + "\n")
         if conf.get('show_calendar'):
-            cal.prCalendar(w=conf.get('day_width'), l=conf.get('line_height'), c=conf.get('months_space'), m=conf.get('months_per_line'))
-            print('Legend: %s vacation, %s out of office, %s home office, %s daily ticket, %s weekly subscription, %s monthly subscription' % (
-                colored('■', 'red'),
-                colored('■', 'blue'),
-                colored('■', 'magenta'),
-                colored('■', 'white'),
-                colored('■', 'green'),
-                colored('■', 'cyan')))
+            cal.formatCalendar(c=conf.get('months_space'), m=conf.get('months_per_line'))
+            car = ' '
+            print(f"{color('Legend', style='bold')}: {color(car, bg='red')} vacation, {color(car, bg='blue')} out of office, {color(car, bg='magenta')} home office, {color(car, bg='white')} daily ticket, {color(car, bg='green')} weekly subscription, {color(car, bg='cyan')} monthly subscription")
             print('\n')
         print(prices.format(conf.get('verbose')))
 

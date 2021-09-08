@@ -4,7 +4,7 @@ def main():
   from fare import Fare
   import traceback
   try:
-    fare = Fare()
+    Fare()
     sys.exit(0)
   except Exception as e:
     print("ERROR: " + str(e), file=sys.stderr)

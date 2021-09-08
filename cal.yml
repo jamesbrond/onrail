@@ -7,11 +7,7 @@ vacationdays: 0
 # calendar months in a row
 months_per_line: 3
 # calendar number of spaces between month columns
-months_space: 6
-# calendar lines per week
-line_height: 1
-# calendar column width
-day_width: 2
+months_space: 3
 
 calendar:
   # vacations: "2021-08-20->2021-08-21"
