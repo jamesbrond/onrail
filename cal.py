@@ -9,8 +9,8 @@ class Cal(calendar.TextCalendar):
     def __init__(self, prices, firstweekday=0):
         super().__init__(firstweekday)
         self._prices = prices
-        self._start = prices.getStart();
-        self._end = prices.getEnd();
+        self._start = prices.getStart()
+        self._end = prices.getEnd()
 
     def getLeaves(self, prices):
         leaves = []

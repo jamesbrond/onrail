@@ -17,7 +17,7 @@ def lastDayOfMonth(day):
     return next_month - timedelta(days=next_month.day)
 
 def lastDayOfWeek(day):
-    return day + timedelta(days=6 - day.weekday());
+    return day + timedelta(days=6 - day.weekday())
 
 def min(d1, d2):
     if d1 < d2:
@@ -32,7 +32,7 @@ def max(d1, d2):
         return d2
 
 def now():
-    return datetime.today();
+    return datetime.today()
 
 def str2date(str):
     return datetime.strptime(str, '%Y-%m-%d').date()

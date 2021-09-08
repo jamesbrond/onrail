@@ -49,7 +49,7 @@ class Fare:
 
     def daily(self, start, end, price, homeoffice):
         ho = homeoffice
-        d = start;
+        d = start
         exceptions = self._exceptions
         business_exceptions = self._business_exceptions
         holid = holidays.IT(years=start.year)
@@ -96,23 +96,28 @@ class Fare:
         d = e = start
         while end > e:
             e += relativedelta.relativedelta(years=1, days=-1)
-        coverage = Prices();
+        coverage = Prices()
         while d < e:
             coverage.append(Price(d, d + relativedelta.relativedelta(years=1, days=-1), price, 'annual subscription', 'white', ['underline']))
             d += relativedelta.relativedelta(years=1)
         return coverage
 
-    def best(self, start, end, prices, homeoffice, deep):
+    def _best_init(self, deep, start, end, prices):
         if deep == 0:
-            p0 = self.annually(start, end, prices[deep])
+            return self.annually(start, end, prices[deep])
         elif deep == 1:
-            p0 = self.monthly(start, end, prices[deep])
+            return self.monthly(start, end, prices[deep])
         elif deep == 2:
-            p0 = self.weekly(start, end, prices[deep])
-        elif deep == 3:
+            return self.weekly(start, end, prices[deep])
+
+
+    def best(self, start, end, prices, homeoffice, deep):
+        if deep == 3:
             return self.daily(start, end, prices[deep], homeoffice)
 
-        coverage = Prices();
+        p0 = self._best_init(deep, start, end, prices)
+
+        coverage = Prices()
         for period in p0.getChildren():
             p1 = self.best(max(start, period.getStart()), min(end, period.getEnd()), prices, homeoffice, deep + 1)
             if p1.getPrice() < period.getPrice():
