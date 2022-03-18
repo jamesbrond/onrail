@@ -1,0 +1,26 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "web",
+			"type": "shell",
+			"command": "yarn build",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},{
+			"label": "test",
+			"type": "shell",
+			"command": ". venv/Scripts/activate && python onrail.py cal.yml -vvv -s 2022-04-01 -e 2022-07-31 --calendar",
+			"problemMatcher": [],
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			}
+		}
+	]
+}
