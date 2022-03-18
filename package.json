@@ -4,17 +4,17 @@
   "description": "Useless program for poor commuters",
   "main": "web/index.js",
   "repository": "https://github.com/jamesbrond/onrail.git",
-  "author": "jamesbrond <diego.brondo@philips.com>",
+  "author": "jamesbrond <jamesbrond@gmail.com>",
   "license": "MIT",
   "private": false,
   "scripts": {
     "build": "webpack && cp web/index.html dist/"
   },
   "devDependencies": {
-    "css-loader": "^6.5.1",
-    "luxon": "^2.3.0",
-    "mini-css-extract-plugin": "^2.5.3",
-    "webpack": "^5.67.0",
+    "css-loader": "^6.7.1",
+    "luxon": "^2.3.1",
+    "mini-css-extract-plugin": "^2.6.0",
+    "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
