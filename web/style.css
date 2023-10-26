@@ -26,6 +26,7 @@ body {
 
 .fc .fc-bg-event .fc-event-title {
   font-style: normal;
+  color: #000;
 }
 
 .fc-h-event.annual {
