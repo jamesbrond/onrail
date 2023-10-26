@@ -1,10 +1,4 @@
-ansicolors==1.1.8
-convertdate==2.3.2
-hijri-converter==2.2.0
-holidays==0.11.2
-korean-lunar-calendar==0.2.1
-PyMeeus==0.5.11
+holidays==0.35
 python-dateutil==2.8.2
-pytz==2021.1
-PyYAML==5.4.1
+PyYAML==6.0.1
 six==1.16.0
