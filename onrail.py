@@ -4,7 +4,6 @@ a quale prezzo? Calcola se conviene fare l'abbonamento o prendere biglietti
 singoli in base ai giorni di smartwork, ferie, festività e trasferte.
 """
 
-import os
 import sys
 import logging
 import argparse
@@ -22,8 +21,8 @@ def main():
         conf = Config(args)
         logging.basicConfig(
             level=conf['loglevel'],
-            format="%(asctime)s %(levelname)s:%(name)s %(message)s",
-            filename=os.path.join('log', 'onrail.log')
+            format = "%(asctime)s %(levelname)s:%(name)s %(message)s",
+            filename = 'onrail.log'
         )
         logging.debug("Configuration parameters: %s", conf)
 
@@ -32,7 +31,7 @@ def main():
         print(prices.format())
 
         if conf['show_calendar']:
-            cal = CalendarExport(prices)
+            cal = CalendarExport('release', prices)
             cal.to_json()
 
         return 0

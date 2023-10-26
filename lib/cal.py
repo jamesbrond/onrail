@@ -7,7 +7,8 @@ from lib import fndate
 
 class CalendarExport:
     """Calendar"""
-    def __init__(self, prices):
+    def __init__(self, dist_dir, prices):
+        self.dist_dir = dist_dir
         self.prices = prices
         self.d = {
             "start": fndate.date_format(prices.start()),
@@ -36,10 +37,10 @@ class CalendarExport:
                 "descr": leaf.description(),
                 "type": leaf.type()
             })
-        with open('dist/data.js', 'w', encoding='utf-8') as f:
-            logging.debug("write to 'dist/data.js'")
+        with open(os.path.join(self.dist_dir, 'data.js'), 'w', encoding='utf-8') as f:
+            logging.debug("write to %s", os.path.join(self.dist_dir, 'data.js'))
             f.write("const data = ")
             json.dump(self.d, f)
-            webbrowser.open(f"file://{os.path.realpath('dist/index.html')}", new=2)
+            webbrowser.open(f"file://{os.path.realpath(os.path.join(self.dist_dir, 'index.html'))}", new=2)
 
 # ~@:-]

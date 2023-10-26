@@ -21,7 +21,7 @@ module.exports = {
 	},
 	entry: './web/index.js',
 	output: {
-		path: path.resolve(__dirname, 'dist'),
+		path: path.resolve(__dirname, 'release'),
 		filename: 'cal.js'
 	},
 	resolve: {

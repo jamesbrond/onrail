@@ -7,9 +7,6 @@
   "author": "jamesbrond <jamesbrond@gmail.com>",
   "license": "MIT",
   "private": false,
-  "scripts": {
-    "build": "webpack && cp web/index.html dist/"
-  },
   "devDependencies": {
     "css-loader": "^6.7.1",
     "luxon": "^3.4.3",
