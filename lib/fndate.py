@@ -12,7 +12,7 @@ def explode(dates):
             date_range = [x.strip() for x in date.split('->')]
             d = str2date(date_range[0])
             e = str2date(date_range[1])
-            while d <=e:
+            while d <= e:
                 results.append(d)
                 d += timedelta(days=1)
         else:
@@ -27,7 +27,7 @@ def first_day_of_month(d):
 
 def first_day_of_week(d):
     """First day of the week"""
-    return d + timedelta(days = -d.weekday())
+    return d + timedelta(days=-d.weekday())
 
 
 def date_format(d):

@@ -5,6 +5,7 @@ import logging
 import webbrowser
 from lib import fndate
 
+
 class CalendarExport:
     """Calendar"""
     def __init__(self, dist_dir, prices):

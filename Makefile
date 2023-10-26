@@ -9,8 +9,8 @@ VERSION_FILE = .version
 # regexp (PRE)(VERSION)(POST)
 VERSION_EXP  = ^( *)([0-9.]+)(.*)
 
-PY_CONF_FLAKE8 = .lint/flake8
-PY_CONF_PYLINT = .lint/pylint.toml
+PY_CONF_FLAKE8 = .flake8
+PY_CONF_PYLINT = .pylint.toml
 
 # define all directories to be created
 # each included Makefile may add to $(DIRS)

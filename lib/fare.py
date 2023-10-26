@@ -1,14 +1,14 @@
 """Ticket fare computation"""
-import holidays
 from datetime import timedelta
+import holidays
 from dateutil import relativedelta
 from lib.price import Price, Prices
 from lib import fndate
 
 ANNUALLY = 0
-MONTHLY  = 1
-WEEKLY   = 2
-DAILY    = 3
+MONTHLY = 1
+WEEKLY = 2
+DAILY = 3
 
 _ticket2number = {
     'ticket': DAILY,
@@ -59,7 +59,11 @@ class Fare:
             e += relativedelta.relativedelta(years=1, days=-1)
         coverage = Prices()
         while d < e:
-            coverage.append(Price(d, d + relativedelta.relativedelta(years=1, days=-1), price, 'annually subscription', 'annual'))
+            coverage.append(Price(d,
+                                  d + relativedelta.relativedelta(years=1, days=-1),
+                                  price,
+                                  'annually subscription',
+                                  'annual'))
             d += relativedelta.relativedelta(years=1)
         return coverage
 
@@ -70,7 +74,13 @@ class Fare:
         e = fndate.last_day_of_month(end)
         coverage = Prices()
         while d < e:
-            coverage.append(Price(d, d + relativedelta.relativedelta(months=1, days=-1), price, f"{d.strftime('%B')} monthly subscription", 'monthly'))
+            coverage.append(Price(
+                d,
+                d + relativedelta.relativedelta(months=1, days=-1),
+                price,
+                f"{d.strftime('%B')} monthly subscription",
+                'monthly'
+            ))
             d += relativedelta.relativedelta(months=1)
         return coverage
 
@@ -106,7 +116,7 @@ class Fare:
                         coverage.append(Price(d, d, 0, "smartwork", 'daily'))
                         ho -= 1
                     else:
-                        coverage.append(Price(d, d, price*2, "daily ticket", 'daily'))
+                        coverage.append(Price(d, d, price * 2, "daily ticket", 'daily'))
             else:
                 coverage.append(Price(d, d, 0, '', 'daily'))
                 ho = self.homeoffice

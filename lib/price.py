@@ -61,6 +61,7 @@ class Component(metaclass=abc.ABCMeta):
             for child in self._children:
                 child.set_deep(deep + 1)
 
+
 class Prices(Component):
     """Composition of Price classes"""
 
@@ -71,16 +72,20 @@ class Prices(Component):
             self._children.append(component)
             self._price += component.price()
             if self._start is None or self._start > component.start():
-                self._start =  component.start()
+                self._start = component.start()
             if self._end is None or self._end < component.end():
-                self._end =  component.end()
+                self._end = component.end()
             self._diff = (self._end - self._start).days + 1
 
             self._children.sort(key=lambda x: x.start())
 
     def format(self, verbose=False):
         if self._price != 0 or verbose:
-            text = "%s+ %s -> %s (%d)\t [%.2f]\n" % ('   '*self._deep, fndate.date_format(self._start), fndate.date_format(self._end), self._diff, self._price)
+            text = self._prn_interval(self._deep,
+                                      fndate.date_format(self._start),
+                                      fndate.date_format(self._end),
+                                      self._diff,
+                                      self._price)
             for child in self._children:
                 text += child.format(verbose)
         else:
@@ -102,10 +107,14 @@ class Prices(Component):
             return self._children[-1]
         return None
 
+    def _prn_interval(self, deep, start, end, diff, price):
+        return f"{'   ' * deep} {start} -> {end} ({diff})\t {price:.2f}\n"
+
+
 class Price(Component):
     """Price class"""
 
-    def __init__(self, start, end, price, descr, type):
+    def __init__(self, start, end, price, descr, price_type):
         super().__init__()
         self._start = start
         self._end = end
@@ -113,14 +122,22 @@ class Price(Component):
         self._price = price
         self._descr = descr
         self._deep = 0
-        self._type = type
+        self._type = price_type
 
     def format(self, verbose=False):
         if self._price != 0 or verbose:
             if self._end == self._start:
-                return "%s| %s \t (%d)\t [%.2f] %s\n" % ('   '*(self._deep), fndate.date_format(self._start), self._diff, self._price, self._descr)
-            else:
-                return "%s| %s -> %s (%d)\t [%.2f] %s\n" % ('   '*(self._deep), fndate.date_format(self._start), fndate.date_format(self._end), self._diff, self._price, self._descr)
+                return self._prn(self._deep,
+                                 fndate.date_format(self._start),
+                                 self._diff,
+                                 self._price,
+                                 self._descr)
+            return self._prn_interval(self._deep,
+                                      fndate.date_format(self._start),
+                                      fndate.date_format(self._end),
+                                      self._diff,
+                                      self._price,
+                                      self._descr)
         return ''
 
     def get_children(self):
@@ -131,5 +148,11 @@ class Price(Component):
 
     def description(self):
         return self._descr
+
+    def _prn_interval(self, deep, start, end, diff, price, descr):
+        return f"{'   ' * deep}| {start} -> {end} ({diff})\t {price:.2f} {descr}\n"
+
+    def _prn(self, deep, start, diff, price, descr):
+        return f"{'   ' * deep}| {start} \t ({diff})\t {price:.2f} {descr}\n"
 
 # ~@:-]

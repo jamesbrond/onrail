@@ -21,8 +21,8 @@ def main():
         conf = Config(args)
         logging.basicConfig(
             level=conf['loglevel'],
-            format = "%(asctime)s %(levelname)s:%(name)s %(message)s",
-            filename = 'onrail.log'
+            format="%(asctime)s %(levelname)s:%(name)s %(message)s",
+            filename='onrail.log'
         )
         logging.debug("Configuration parameters: %s", conf)
 

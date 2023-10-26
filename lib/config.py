@@ -11,7 +11,7 @@ from lib import fndate
 EXCEPTION_KEYS = ['full day leave', 'holiday', 'travel', 'smartwork']
 
 
-class ExceptionDateList(object):
+class ExceptionDateList:
     """List of exceptions"""
 
     def __init__(self):
