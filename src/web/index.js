@@ -1,6 +1,6 @@
 import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import './style.css';
+import './style.scss';
 import { DateTime } from "luxon";
 
 function renderTitle(titleEl, data) {

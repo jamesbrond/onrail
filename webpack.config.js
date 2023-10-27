@@ -1,15 +1,17 @@
 const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
     module: {
-        rules: [{
-            test: /\.css$/,
-            use: [
-                { loader: MiniCssExtractPlugin.loader },
-                { loader: 'css-loader', options: { importLoaders: 1 } }
+        rules: [
+            {
+                test: /\.s[ac]ss$/i,
+                use: [
+                  "style-loader",
+                  "css-loader",
+                  "sass-loader",
+                ]
+              }
             ]
-        }]
     },
     externals: {
         jquery: 'jQuery',
@@ -20,10 +22,7 @@ module.exports = {
         filename: 'cal.js'
     },
     resolve: {
-        extensions: [ '.js' ],
+        extensions: [ '.js', '.scss' ],
     },
     target: 'web',
-    plugins: [
-        new MiniCssExtractPlugin({filename: 'style.css'})
-    ]
 };

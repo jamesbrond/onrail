@@ -4,29 +4,32 @@ MAKE_DIR     = $(BUILD_DIR)/make
 DIST_DIR     = release
 GIT_HOOKS_DIR= .git/hooks
 VENV_DIR     = $(BUILD_DIR)/venv
+WEB_DIR      := src/web
 
 PYTHON       = /cygdrive/c/Users/320072283/bin/python/python.exe
 VERSION_FILE = .version
 # regexp (PRE)(VERSION)(POST)
 VERSION_EXP  = ^( *)([0-9.]+)(.*)
-WEBPACK_CONF = $(wildcard webpack.config.js)
 
 PY_CONF_FLAKE8 = .flake8
 PY_CONF_PYLINT = .pylint.toml
 
-
-WEB_DIR  := src/web
-WEB_OBJS := $(DIST_DIR)/web/cal.js $(DIST_DIR)/web/style.css
-
 # define all directories to be created
 # each included Makefile may add to $(DIRS)
-DIRS = $(MAKE_DIR) $(DIST_DIR) $(DIST_DIR)/web
+DIRS = $(MAKE_DIR) $(DIST_DIR)
 
 SHELL:=/bin/bash
 
 -include $(MAKE_DIR)/misc.mk
 -include $(MAKE_DIR)/git.mk
 -include $(MAKE_DIR)/py.mk
+
+
+WEBPACK_CONF = $(wildcard webpack.config.js)
+WEB_SRCS := $(WEB_DIR)/index.js $(WEB_DIR)/style.scss
+WEB_OBJS := $(DIST_DIR)/web/cal.js
+PY_OBJS  := $(patsubst src/%,$(DIST_DIR)/%,$(PY_SRCS))
+
 
 # download all missing include Makefiles
 $(MAKE_DIR)/%.mk: | $(MAKE_DIR)
@@ -54,10 +57,7 @@ distclean:: clean ## Delete all files in the current directory (or created by th
 	@-$(RMDIR) $(MAKE_DIR) $(NULL_STDERR)
 	@$(call log-info,MAKE,$@ done)
 
-dist:: build $(WEB_OBJS) $(DIST_DIR)/web/index.html ## Create a distribution file or files for this program
-	@$(call log-debug,MAKE,Copy python source to $(DIST_DIR))
-	@cp -r src/lib $(DIST_DIR)
-	@cp src/onrail.py $(DIST_DIR)
+dist:: build $(PY_OBJS) $(WEB_OBJS) $(DIST_DIR)/web/index.html ## Create a distribution file or files for this program
 	@$(call log-info,MAKE,$@ done)
 
 init:: ## Initialize development environment
@@ -70,12 +70,12 @@ lint:: ## Perform static linting
 test:: build ## Unit test
 	@$(call log-info,MAKE,$@ done)
 
-$(DIST_DIR)/web/index.html: | $(DIST_DIR) $(DIST_DIR)/web
-	@$(call log-debug,MAKE,copy '$@' file to '$(DIST_DIR)/web/')
-	@cp $(WEB_DIR)/index.html $(DIST_DIR)/web/
+$(DIST_DIR)/%: src/%
+	@$(call log-debug,MAKE,Copy source '$@' to '$(DIST_DIR)/')
+	@mkdir -p $(@D) && cp -rf $< $@
 
-$(WEB_OBJS): $(WEBPACK_CONF) | $(DIST_DIR)
-	@$(call log-debug,MAKE,run webpack ($@))
+$(WEB_OBJS): $(WEBPACK_CONF) $(WEB_SRCS) | $(DIST_DIR)
+	@$(call log-debug,MAKE,run webpack)
 	@yarn webpack build --config $(WEBPACK_CONF) --output-path $(DIST_DIR)/web --mode="production"
 
 # ~@:-]
