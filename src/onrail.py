@@ -31,7 +31,7 @@ def main():
         print(prices.format())
 
         if conf['show_calendar']:
-            cal = CalendarExport('release', prices)
+            cal = CalendarExport(prices)
             cal.to_json()
 
         return 0

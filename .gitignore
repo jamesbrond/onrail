@@ -1,7 +1,4 @@
-.make/
-.venv/
-__pycache__/
+build/
 release/
 node_modules/
 .yarnclean
-onrail.log

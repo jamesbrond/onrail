@@ -1,23 +1,26 @@
 PACKAGE      := onrail
-MAKE_DIR     = .make
+BUILD_DIR    = build
+MAKE_DIR     = $(BUILD_DIR)/make
 DIST_DIR     = release
 GIT_HOOKS_DIR= .git/hooks
-VENV_DIR     = .venv
+VENV_DIR     = $(BUILD_DIR)/venv
 
 PYTHON       = /cygdrive/c/Users/320072283/bin/python/python.exe
 VERSION_FILE = .version
 # regexp (PRE)(VERSION)(POST)
 VERSION_EXP  = ^( *)([0-9.]+)(.*)
+WEBPACK_CONF = $(wildcard webpack.config.js)
 
 PY_CONF_FLAKE8 = .flake8
 PY_CONF_PYLINT = .pylint.toml
 
+
+WEB_DIR  := src/web
+WEB_OBJS := $(DIST_DIR)/web/cal.js $(DIST_DIR)/web/style.css
+
 # define all directories to be created
 # each included Makefile may add to $(DIRS)
-DIRS = $(MAKE_DIR) $(DIST_DIR)
-
-WEB_DIR  := web
-WEB_OBJS := $(DIST_DIR)/cal.js $(DIST_DIR)/style.css
+DIRS = $(MAKE_DIR) $(DIST_DIR) $(DIST_DIR)/web
 
 SHELL:=/bin/bash
 
@@ -51,7 +54,10 @@ distclean:: clean ## Delete all files in the current directory (or created by th
 	@-$(RMDIR) $(MAKE_DIR) $(NULL_STDERR)
 	@$(call log-info,MAKE,$@ done)
 
-dist:: build $(WEB_OBJS) $(DIST_DIR)/index.html ## Create a distribution file or files for this program
+dist:: build $(WEB_OBJS) $(DIST_DIR)/web/index.html ## Create a distribution file or files for this program
+	@$(call log-debug,MAKE,Copy python source to $(DIST_DIR))
+	@cp -r src/lib $(DIST_DIR)
+	@cp src/onrail.py $(DIST_DIR)
 	@$(call log-info,MAKE,$@ done)
 
 init:: ## Initialize development environment
@@ -64,15 +70,12 @@ lint:: ## Perform static linting
 test:: build ## Unit test
 	@$(call log-info,MAKE,$@ done)
 
-$(DIST_DIR)/index.html: | $(DIST_DIR)
-	@$(call log-debug,MAKE,copy '$@' file)
-	@cp $(WEB_DIR)/index.html $(DIST_DIR)
+$(DIST_DIR)/web/index.html: | $(DIST_DIR) $(DIST_DIR)/web
+	@$(call log-debug,MAKE,copy '$@' file to '$(DIST_DIR)/web/')
+	@cp $(WEB_DIR)/index.html $(DIST_DIR)/web/
 
-$(WEB_OBJS): | $(DIST_DIR)
-	@$(call log-debug,MAKE,run webpack)
-	@yarn webpack
-
-xxx:
-	@echo $(PY_SRCS)
+$(WEB_OBJS): $(WEBPACK_CONF) | $(DIST_DIR)
+	@$(call log-debug,MAKE,run webpack ($@))
+	@yarn webpack build --config $(WEBPACK_CONF) --output-path $(DIST_DIR)/web --mode="production"
 
 # ~@:-]
