@@ -1,5 +1,5 @@
 // Color variables
-$event-clr: #000;
+$event-clr: #666;
 $event-bkg: #fff;
 $interval-bkg: #00f;
 $interval-clr: #fff;
@@ -29,33 +29,37 @@ body {
 #calendar {
   max-width: 900px;
   margin: 0 auto;
+}
 
-  .fc-bg-event {
-    color: $event-clr;
-  }
+.fc-bg-event {
+  color: $event-clr;
+}
 
-  .fc .fc-bg-event .fc-event-title {
+.fc .fc-bg-event {
+  opacity: 1;
+
+  .fc-event-title {
     font-style: normal;
     color: $event-clr;
   }
+}
 
-  .fc-h-event.annual {
-    background: $annual-clr;
-  }
+.fc-h-event.annual {
+  background: $annual-clr;
+}
 
-  .fc-h-event.monthly {
-    background: $monthly-clr;
-  }
+.fc-h-event.monthly {
+  background: $monthly-clr;
+}
 
-  .fc-h-event.weekly {
-    background: $weekly-clr;
-  }
+.fc-h-event.weekly {
+  background: $weekly-clr;
+}
 
-  .fc-h-event.daily {
-    background: $daily-clr;
-  }
+.fc-h-event.daily {
+  background: $daily-clr;
+}
 
-  .fc-bg-event.blank {
-    background: $event-bkg;
-  }
+.fc-bg-event.blank {
+  background: $event-bkg;
 }

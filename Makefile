@@ -24,11 +24,12 @@ SHELL:=/bin/bash
 -include $(MAKE_DIR)/git.mk
 -include $(MAKE_DIR)/py.mk
 
-
 WEBPACK_CONF = $(wildcard webpack.config.js)
 WEB_SRCS := $(WEB_DIR)/index.js $(WEB_DIR)/style.scss
-WEB_OBJS := $(DIST_DIR)/web/cal.js
-PY_OBJS  := $(patsubst src/%,$(DIST_DIR)/%,$(PY_SRCS))
+DEV_WEB_OBJS := $(BUILD_DIR)/web/cal.js
+DEV_PY_OBJS  := $(patsubst src/%,$(BUILD_DIR)/%,$(PY_SRCS))
+PROD_WEB_OBJS := $(DIST_DIR)/web/cal.js
+PROD_PY_OBJS  := $(patsubst src/%,$(DIST_DIR)/%,$(PY_SRCS))
 
 
 # download all missing include Makefiles
@@ -44,7 +45,7 @@ $(DIRS):
 	@$(call log-debug,MAKE,make '$@' folder)
 	@mkdir -p $@
 
-build:: ## Compile the entire program
+build:: $(DEV_PY_OBJS) $(DEV_WEB_OBJS) $(BUILD_DIR)/web/index.html ## Compile the entire program
 	@$(call log-info,MAKE,$@ done)
 
 clean:: ## Delete all files created by this makefile, however don’t delete the files that record configuration or environment
@@ -57,7 +58,7 @@ distclean:: clean ## Delete all files in the current directory (or created by th
 	@-$(RMDIR) $(MAKE_DIR) $(NULL_STDERR)
 	@$(call log-info,MAKE,$@ done)
 
-dist:: build $(PY_OBJS) $(WEB_OBJS) $(DIST_DIR)/web/index.html ## Create a distribution file or files for this program
+dist:: $(PROD_PY_OBJS) $(PROD_WEB_OBJS) $(DIST_DIR)/web/index.html ## Create a distribution file or files for this program
 	@$(call log-info,MAKE,$@ done)
 
 init:: ## Initialize development environment
@@ -70,12 +71,21 @@ lint:: ## Perform static linting
 test:: build ## Unit test
 	@$(call log-info,MAKE,$@ done)
 
+$(BUILD_DIR)/%: src/%
+	@$(call log-debug,MAKE,Copy source '$@' to '$(BUILD_DIR)/')
+	@mkdir -p $(@D) && cp -rf $< $@
+
 $(DIST_DIR)/%: src/%
 	@$(call log-debug,MAKE,Copy source '$@' to '$(DIST_DIR)/')
 	@mkdir -p $(@D) && cp -rf $< $@
 
-$(WEB_OBJS): $(WEBPACK_CONF) $(WEB_SRCS) | $(DIST_DIR)
-	@$(call log-debug,MAKE,run webpack)
+$(DEV_WEB_OBJS): $(WEBPACK_CONF) $(WEB_SRCS) | $(BUILD_DIR)
+	@$(call log-debug,MAKE,run webpack development mode)
+	@yarn webpack build --config $(WEBPACK_CONF) --output-path $(BUILD_DIR)/web --mode="development"
+
+$(PROD_WEB_OBJS): $(WEBPACK_CONF) $(WEB_SRCS) | $(DIST_DIR)
+	@$(call log-debug,MAKE,run webpack production mode)
 	@yarn webpack build --config $(WEBPACK_CONF) --output-path $(DIST_DIR)/web --mode="production"
+
 
 # ~@:-]

@@ -19,7 +19,7 @@ function renderCalendar(calendarEl, data) {
 	for (let i = 0, days=data.days, l = days.length; i < l; ++i) {
 		no_price = days[i]['price'] == 0;
 		events.push({
-			title: days[i]['descr'] + (days[i]['price'] ? (' (' + days[i]['price']+ ')') : ''),
+			title: days[i]['descr'] + (days[i]['price'] ? (' (' + days[i]['price']+ '€)') : ''),
 			start: days[i]['start'],
 			end: DateTime.fromISO(days[i]['end']).plus({ days: 1 }).toISODate(),
 			classNames: no_price ? 'blank' : days[i]['type'],
@@ -43,9 +43,7 @@ function renderCalendar(calendarEl, data) {
 	calendar.render();
 }
 
-console.log(data);
-
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
 	renderTitle(document.getElementById('interval'), data);
 	renderCalendar(document.getElementById('calendar'), data);
 });
