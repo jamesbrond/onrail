@@ -1,0 +1,21 @@
+holidays: IT
+# 0 is Monday, 6 is Sunday
+workdays: [ 0, 1, 2, 3, 4 ]
+homeoffice: 3
+
+calendar:
+  smartwork: "2023-11-03"
+  full day leave: "2023-10-30->2023-10-31,2023-11-20->2023-11-23,2023-12-27->2023-12-29,2024-01-02->2024-01-05"
+  # holiday:
+  # travel: "2022-01-13->2022-01-14,2022-01-20"
+
+prices:
+  ticket: 5.8
+  subscription_weekly: 26.7
+  subscription_monthly: 78.5
+  subscription_annual: 770
+
+  # ticket: 4.3
+  # subscription_weekly: 20.3
+  # subscription_monthly: 60.5
+  # subscription_annual: 592
