@@ -1,4 +1,4 @@
-holidays==0.35
+holidays==0.42
 python-dateutil==2.8.2
 PyYAML==6.0.1
 six==1.16.0
